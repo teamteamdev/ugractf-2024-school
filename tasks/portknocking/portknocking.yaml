@@ -1,0 +1,14 @@
+category: crypto
+points: 200
+title: Стук
+author: nsychev
+description: |
+  К серверу в дверь постучали:
+  
+  — Кто там?.
+
+  Никто не ответил.
+
+  «UDP,» — подумал сервер.
+generator: ./generate.py
+attachments_path: public/

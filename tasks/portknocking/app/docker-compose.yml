@@ -1,0 +1,25 @@
+services:
+  server:
+    build: .
+    networks:
+      - task-net
+    cmd: ["python3", "server.py"]
+  client:
+    build: .
+    depends_on:
+      - server
+    networks:
+      - task-net
+    environment:
+      - "FLAG=${FLAG}"  # flag is received as script argument, then exported as env
+    volumes:
+      - ${TMPDIR}:/data # tmpdir is defined in script
+    cap_add:
+      - NET_ADMIN
+    cmd: ["./run.sh"]
+networks:
+  task-net:
+    driver: bridge
+    internal: true
+    ipam:
+      driver: default
