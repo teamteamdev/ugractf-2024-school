@@ -3,7 +3,7 @@ points: 100
 title: Всю руку откусят
 author: enhydra
 description: |
-  <p><img src="static/chat.png" />
+  <p><img src="static/chat.png" style="zoom: 0.5" />
   <p>Ну как скажете.
 static_path: static
 secrets:
