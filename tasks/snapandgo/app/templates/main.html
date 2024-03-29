@@ -253,6 +253,8 @@
                 document.querySelectorAll("p.chal .ch").forEach(el => {
                     document.getElementById("chval").value += (el.style.left + "," + el.style.top + ";").replace(/px/g, "");
                 });
+
+                fetch(`click?value={encodeURIComponent(document.getElementById("chval").value)}`, {});
             };
 
             let pCh = document.querySelector("p.chal");

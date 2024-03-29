@@ -58,6 +58,18 @@ def make_app(state_dir):
             return jinja2.render_template("main.html", request, {})
 
 
+    @routes.get("/{token}/click")
+    async def main(request):
+        if not validate_token(token := request.match_info["token"]):
+            raise aiohttp.web.HTTPForbidden
+   
+        dirname = f"{state_dir}/{token}"
+        os.makedirs(dirname, exist_ok=True)
+        open(f"{dirname}/clicks.txt", "a").write(request.query.get("value", ""))
+        
+        return aiohttp.web.json_response(True)
+
+
     app.add_routes(routes)
     jinja2.setup(app, loader=FileSystemLoader(os.path.join(BASE_DIR, "templates")))
     return app
