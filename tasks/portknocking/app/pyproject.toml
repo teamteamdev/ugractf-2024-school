@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "epkp"
-version = "0.1.0"
-description = ""
+version = "1.0"
+description = "Encrypted Port Knocking Protocol Implementation"
 authors = ["Nikita Sychev <root@nsychev.ru>"]
 
 [tool.poetry.dependencies]
