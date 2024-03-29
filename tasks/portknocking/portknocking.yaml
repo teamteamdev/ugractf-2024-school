@@ -3,12 +3,9 @@ points: 200
 title: Стук
 author: nsychev
 description: |
-  К серверу в дверь постучали:
-  
-  — Кто там?.
-
-  Никто не ответил.
-
-  «UDP,» — подумал сервер.
+  <p>К серверу в дверь постучали:</p>
+  <p>— Кто там?</p>
+  <p>Никто не ответил.</p>
+  <p>«UDP,» — подумал сервер.</p>
 generator: ./generate.py
 attachments_path: public/

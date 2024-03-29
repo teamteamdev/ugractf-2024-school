@@ -38,4 +38,4 @@ if [ -z "$success" ]; then
 fi
 
 # fix checksum in captured traffic
-tcprewrite --fixcsum --infile "$TMPDIR/capture.pcap" --outfile="$workdir/captured_traffic.pcap"
+tcprewrite --fixcsum --infile "$TMPDIR/capture.pcap" --outfile="$workdir/capture.pcap"
