@@ -16,8 +16,8 @@ async def handle(conn: telnet.Connection):
         return
 
     oneshot = await start_oneshot(token, pty=True)
-    with oneshot.open("/flag.txt", "w") as f:
+    flag_path = oneshot.get_external_file_path("/flag.txt")
+    with open(os.open(flag_path, os.O_RDWR | os.O_CREAT, 0o400), "w") as f:
         f.write(get_flag(token) + "\n")
-    os.chown(oneshot.get_external_file_path("/flag.txt"), 32768, 32768)
-    os.chmod(oneshot.get_external_file_path("/flag.txt"), 0o400)
+    os.chown(flag_path, 32768, 32768)
     return oneshot
