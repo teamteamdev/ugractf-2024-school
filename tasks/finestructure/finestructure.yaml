@@ -1,0 +1,11 @@
+category: forensics
+points: 150
+title:
+  Выбор из двух вариантов
+author: enhydra
+description: |
+  <p>Инга Сергеевна устанавливала операционную систему, но немного поторопилась… А потом поняла, что сделала, и печально вздохнула.
+generator: ../_scripts/kyzylborda-lib-generator
+secrets:
+  seed: Voovaish8ohs3boi0doo2axaey7Aethayeesh0daejee
+  flag: ugra_always_double_double_check_[a-z0-9]{12}

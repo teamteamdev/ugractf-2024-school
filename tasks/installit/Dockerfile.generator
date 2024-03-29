@@ -1,0 +1,30 @@
+FROM alpine AS build
+
+RUN apk update && \
+    apk add --no-cache \
+        build-base \
+        cmake
+
+WORKDIR /app
+
+COPY ./task .
+
+WORKDIR /app/build
+
+RUN cmake -DCMAKE_BUILD_TYPE=Release .. && \
+    cmake --build .
+
+FROM alpine
+
+RUN apk update && \
+    apk add --no-cache musl-dev gcompat bash openssl
+
+WORKDIR /app
+
+COPY --from=build /app/build/install_it /app/install_it
+COPY --from=build /app/build/patch_it /app/patch_it
+COPY --from=build /app/build/fast_flag /app/fast_flag
+
+COPY generate.sh /generate.sh
+
+ENTRYPOINT ["bash", "/generate.sh"]

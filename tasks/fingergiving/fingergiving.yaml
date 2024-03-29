@@ -1,0 +1,20 @@
+category: admin
+points: 100
+title: Всю руку откусят
+author: enhydra
+description: |
+  <p><img src="static/chat.png" />
+  <p>Ну как скажете.
+static_path: static
+secrets:
+  seed: aihee3aht6ughei1aeChai3die3we0oofahvees1Xou9
+  flag: ugra_you_are_not_going_to_stop_after_the_elbow_[a-z0-9]{12}
+bullets:
+  - telnet -l {{token}} fingergiving.{{hostname}} 9275
+generator: ../_scripts/kyzylborda-lib-generator
+daemon:
+  exec: ../_scripts/kyzylborda-lib-quarantine-daemon Dockerfile.controller box
+  cwd: .
+  socket: ./app.sock
+  socket_type: tcp
+  tcp_port: 9275

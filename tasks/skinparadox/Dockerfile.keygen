@@ -1,0 +1,6 @@
+FROM alpine
+RUN apk update && apk add g++ git gc-dev pcre-dev python3 py3-pip
+RUN git clone --depth 1 https://github.com/shedskin/shedskin && cd shedskin && python3 -m pip install --break-system-packages .
+COPY keygen.py .
+RUN shedskin translate --nobounds --nogc keygen.py && \
+	g++ -O2 -std=c++17 -Ishedskin/shedskin/lib -static keygen.cpp shedskin/shedskin/lib/builtin.cpp shedskin/shedskin/lib/sys.cpp -lgc -lgctba -lutil -o keygen

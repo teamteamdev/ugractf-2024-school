@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title></title>
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Marhey:wght@300&family=Roboto+Slab:wght@100..900&family=Roboto:wght@400;500&family=Slabo+27px&display=swap" rel="stylesheet">
+		<style type="text/css">
+			html, body {
+				height: 100%;
+			}
+
+			body {
+				font-family: Arial, sans-serif;
+				margin: 0;
+				background-image: linear-gradient(to bottom, #404040 0%, #505050 80%, #ffffff 80%, #e0e0e0 100%);
+			}
+
+			.spin {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				text-align: center;
+				width: 12vh;
+				height: 12vh;
+				border-radius: 50%;
+				background-color: #ff0000;
+				color: #ffffff;
+				font-weight: bold;
+				font-size: 2vh;
+				animation: spin 0.5s infinite alternate ease-in-out;
+				box-shadow: 0 0 50px #ff3000;
+				position: absolute;
+				left: 38%;
+				top: 15%;
+			}
+
+			@keyframes spin {
+				0% {
+					transform: rotate(-20deg);
+				}
+				100% {
+					transform: rotate(20deg);
+				}
+			}
+
+			.spin::after {
+				content: "";
+				position: absolute;
+				width: 100%;
+				height: 100%;
+				border-radius: 50%;
+				box-shadow: 0 0 100px #ff3000;
+				animation: glow 1s infinite alternate ease-in;
+			}
+
+			@keyframes glow {
+				0% {
+					opacity: 0;
+				}
+				100% {
+					opacity: 1;
+				}
+			}
+
+			img {
+				position: absolute;
+				left: 30%;
+				bottom: 10%;
+				transform: translateX(-50%);
+				height: 70%;
+			}
+
+			main {
+				position: absolute;
+				left: 50%;
+				top: 20%;
+				color: #ffffff;
+				font-family: "Roboto Slab", serif;
+				font-size: 5vh;
+			}
+
+			button {
+				display: block;
+				margin-top: 5vh;
+				background-color: #3773d4;
+				color: #ffffff;
+				font-family: inherit;
+				font-size: 5vh;
+				padding: 1vh 3vh;
+				border-radius: 2vh;
+				border: none;
+				border-bottom: 0.5vh solid #a4c0ed;
+				cursor: pointer;
+			}
+
+			button:active {
+				border-bottom-width: 0.1vh;
+				margin-top: 5.4vh;
+			}
+
+			a {
+				margin-top: 2vh;
+				font-size: 2vh;
+				opacity: 0.5;
+				border-bottom: 1px solid #ffffff;
+				cursor: pointer;
+			}
+		</style>
+	</head>
+	<body>
+		<img src="../static/ucucuga.png">
+
+		<!-- <div class="spin">Только<br>сегодня!</div> -->
+
+		<main>
+			Еще быстрее.<br>
+			Еще уцуцужнее.<br>
+			Прямо сейчас.
+
+			<button onclick="buy()">Купить за 1 BTC</button>
+			<a onclick="have()">У меня уже есть ключ</a>
+		</main>
+
+		<script type="text/javascript">
+			function buy() {
+				alert("Для покупки UCUCUGA Pro Edition отправьте 1 BTC на адрес 1Bb2VAU6tEzMVh9neH3jycgy5KnNUMrPQ5. Мы найдем, как с вами связаться.");
+			}
+			async function have() {
+				const key = prompt("Введите ключ активации:");
+				alert(await (await fetch(`get-flag/${key}`)).text());
+			}
+		</script>
+	</body>
+</html>

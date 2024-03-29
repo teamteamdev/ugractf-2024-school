@@ -1,0 +1,15 @@
+category: web
+points: 50
+title: Щелкапча
+author: enhydra
+description: |
+  <p>Вы пойдите прощёлкайте.
+generator: ../_scripts/kyzylborda-lib-generator
+daemon:
+  exec: kyzylborda-docker-compose-daemon
+  cwd: app
+  socket: ./app.sock
+  socket_type: http
+secrets:
+  seed: Beesheshah7idaiVohphah8do7Ween4iequeiT9doshi
+  flag: ugra_i_call_that_mercy_[a-z0-9]{12}

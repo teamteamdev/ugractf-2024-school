@@ -1,0 +1,23 @@
+category: reverse
+points: 200
+title: Late Stage Capitalism
+author: purplesyringa
+description: |
+  Вышла новая версия уцуцуги!
+
+  Она, правда, дорогая и требует ключа. Ну ничего, найдем кейген.
+
+  Другое дело, что хакерам тоже хочется кушать...
+bullets:
+  - "Токен: {{ token }}"
+attachments_path: attachments
+generator: ../_scripts/kyzylborda-lib-generator
+daemon:
+  exec: kyzylborda-docker-compose-daemon
+  cwd: web
+  socket: ./app.sock
+  socket_type: http
+secrets:
+  seed: 2ZZpAEdja+LQf+LhLbzeTaZc2d4k38ox
+  token: "[a-z0-9]{16}"
+  flag: ugra_was_is_worth_it_[a-z0-9]{12}

@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Onest:wght@100..900&family=Victor+Mono:ital,wght@0,600&family=Alumni+Sans:ital,wght@1,800&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Совершение щелчка: подтверждение</title>
+    <style type="text/css">
+        body {
+            font-family: 'Onest', sans-serif;
+            font-weight: 300;
+            font-size: 20px;
+            color: white;
+        }
+
+        html {
+            background-color: black;
+            background: url('/static/background.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        form {
+            background: rgba(0, 0, 0, 0.7);
+            margin: 4em auto 2em;
+            padding: 4em;
+            max-width: 40em;
+            box-shadow: 0px 0px 2em 2em rgba(0, 0, 0, 0.7);
+        }
+
+        h1 {
+            font-family: 'Alumni Sans', sans-serif;
+            font-style: italic;
+            text-transform: uppercase;
+            font-size: 300%;
+            margin: 0.5em 0 0.1em;
+        }
+
+        .error {
+            color: #F99;
+            text-shadow: 0px 0px 5px red;
+        }
+
+        .letters {
+            font-family: 'Victor Mono', monospace;
+            font-weight: 600;
+            user-select: none;
+            font-size: 220%;
+            white-space: nowrap;
+            text-align: center;
+            margin: 3em 0;
+            letter-spacing: 0.2em;
+            color: white;
+            text-shadow: 0px 0px 8px black;
+        }
+
+        .letters .wasted {
+            animation: wasting 4.5s 1s forwards;
+        }
+
+        @keyframes wasting {
+            0% {
+                filter: blur(0px);
+                opacity: 1;
+            }
+            100% {
+                filter: blur(30px);
+                opacity: 0;
+            }
+        }
+
+
+        input[type="submit"] {
+          background: linear-gradient(to right, #3a1c71, #d76d77, #ffaf7b); /* Blue to purple gradient */
+          color: #ffffff; /* White text color for contrast */
+          border: 2px solid black; /* Subtle border */
+          border-radius: 30px; /* Rounded corners for a modern look */
+          padding: 12px 24px; /* Spacing inside the button */
+          cursor: pointer; /* Indicates the button is clickable */
+          transition: transform 0.2s ease-in-out, background 0.3s ease-in-out; /* Smooth transitions for interaction */
+          outline: none; /* Removes the outline to keep the style clean */
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+          transition: all 0.3s ease; /* Smooth transition for hover effects */
+          font: inherit;
+          font-size: 150%;
+        }
+
+        input[type="submit"]:hover, input[type="submit"]:focus {
+          background: linear-gradient(to right, #5a189a, #d76d77, #ffaf7b); /* Slightly different gradient on hover/focus for visual feedback */
+          box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15); /* Increase shadow for a "lifted" effect */
+          border-color: #888; /* Subtle border color change */
+        }
+
+        input[type="submit"]:active {
+          box-shadow: 0 3px 4px rgba(0, 0, 0, 0.1); /* Reduce shadow to mimic pressing */
+          border-color: #111; /* Subtle border color change */
+          opacity: 0.7;
+        }
+
+        .collapsed p {
+            display: none;
+        }
+        .collapsed .uncollapse {
+            display: block;
+        }
+        .uncollapsed p {
+            display: block;
+        }
+        .uncollapsed .uncollapse {
+            display: none;
+        }
+
+        a {
+            color: white;
+            background: linear-gradient(to right, #3a1c71, #d76d77, #ffaf7b); /* Blue to purple gradient */
+            border-radius: 30px;
+            padding: 0.5em 10em;
+            text-decoration: none;
+        }
+
+        .chal {
+            overflow-x: scroll;
+            position: relative;
+        }
+
+        .ch {
+            text-align: center;
+            position: absolute;
+            width: 1em;
+            height: 1em;
+            line-height: 1em;
+            border-radius: 1em;
+            transform: translate(-0.5em, -0.5em);
+            background: rgb(90, 160, 255);
+            cursor: pointer;
+            border: 1px solid white;
+        }
+        .ch:hover {
+            background: rgb(255, 100, 90);
+        }
+        .finger {
+            width: 4em;
+        }
+        .radio-group {
+            margin: 0 1em 0 0;
+            vertical-align: middle;
+        }
+
+        input[type="radio"] {
+          display: none;
+        }
+
+        /* Custom radio button styling */
+        input[type="radio"] + label {
+          position: relative;
+          padding-left: 35px;
+          cursor: pointer;
+          display: inline-block;
+          color: #fff; /* Adjust this color to fit the theme */
+          font-size: 16px; /* Adjust font size as needed */
+        }
+
+        /* Custom radio button circle */
+        input[type="radio"] + label:before {
+          content: '';
+          position: absolute;
+          left: 0;
+          top: 24px;
+          width: 24px;
+          height: 24px;
+          border: 2px solid #5a189a; /* Border color */
+          border-radius: 50%;
+          background: linear-gradient(to right, #3a1c71, #d76d77); /* Background gradient */
+          transition: 0.3s;
+        }
+
+        /* Inner circle to show the radio button is selected */
+        input[type="radio"]:checked + label:after {
+          content: '';
+          position: absolute;
+          left: 8px;
+          top: 32px;
+          width: 12px;
+          height: 12px;
+          border-radius: 50%;
+          background: white;
+          transition: 0.3s;
+        }
+
+        /* Hover effect for label */
+        input[type="radio"] + label:hover:before {
+          background: linear-gradient(to right, #5a189a, #d76d77, #ffaf7b); /* Adjust hover gradient */
+        }
+
+    </style>
+<body>
+    {% if flag %}
+        <div class="letters">
+        {% for i in range(flag | length) -%}
+            <span{% if i in numbers %} class="wasted"{% endif %}>{{ flag[i] }}</span>
+        {%- endfor %}
+        </div>
+    {% else %}
+        <form method="post" action="">
+            <p>Уважаемый Танос! Для подтверждения осуществления щелчка требуется полностью пройти все процедуры проверки, имеющиеся на данной странице.</p>
+
+            <div class="block">
+            <h1>Проверка 1</h1>
+            {% if errors and errors["challenge1"] %}<p class="error">Проверка 1 пройдена неверно. Пожалуйста, пройдите заново, это важно.</p>{% endif %}
+            <div class="collapsed">
+                <p>Выберите изображение, на котором осуществляется щелчок пальцами.</p>
+                <p>
+                    {% for value in ["first", "second", "third", "fourth", "fifth"] -%}
+                    <span class="radio-group">
+                    <input type="radio" name="challenge1" value="{{ value }}" id="radio{{ loop.index }}"{% if loop.index == 1 %} checked="checked"{% endif %}>
+                    <label for="radio{{ loop.index }}"><img class="finger" src="/static/fingers/{{ loop.index }}.png"></label>
+                    </span>
+                    {%- endfor %}
+                </p>
+                <p class="uncollapse"><a href="#">Развернуть</a>
+            </div>
+            </div>
+
+            <div class="block">
+            <h1>Проверка 2</h1>
+            {% if errors and errors["challenge2"] %}<p class="error">Проверка 2 пройдена неверно. Пожалуйста, пройдите заново, это важно.</p>{% endif %}
+            <div class="collapsed">
+                <p>Отметьте на изображении все руки, которые только что щёлкнули пальцами.</p>
+                <p class="chal"><img src="/static/hands.jpg">
+                <p><input name="challenge2" id="chval" type="hidden">
+                <p class="uncollapse"><a href="#">Развернуть</a>
+            </div>
+            </div>
+
+            <div class="block">
+            <p>Если всё точно правильно, можно продолжить.
+            <p><input type="submit" value="Продолжить">
+            </div>
+        </form>
+        <script type="text/javascript">
+            document.querySelectorAll(".uncollapse a").forEach(a => {
+                a.onclick = (e) => {
+                    a.parentNode.parentNode.className = "uncollapsed";
+                    e.preventDefault();
+                }
+            });
+
+            let update = () => {
+                document.getElementById("chval").value = "";
+                document.querySelectorAll("p.chal .ch").forEach(el => {
+                    document.getElementById("chval").value += (el.style.left + "," + el.style.top + ";").replace(/px/g, "");
+                });
+            };
+
+            let pCh = document.querySelector("p.chal");
+            pCh.onclick = (e) => {
+                if (e.target != document.querySelector("p.chal img")) {
+                    return;
+                }
+
+                let el = document.createElement("span");
+                el.className = "ch";
+                el.style.left = e.offsetX + "px";
+                el.style.top = e.offsetY + "px";
+                el.title = "Удалить";
+                el.onclick = (e) => {
+                    e.target.parentNode.removeChild(e.target);
+                    update();
+                };
+                pCh.appendChild(el);
+
+                update();
+            };
+        </script>
+    {% endif %}

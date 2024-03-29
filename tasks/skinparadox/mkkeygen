@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -e
+id="$(docker create "$(docker build -q . -f Dockerfile.keygen)" a)"
+docker cp "$id:/keygen" attachments/keygen
+docker rm "$id"

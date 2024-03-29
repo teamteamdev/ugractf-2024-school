@@ -1,0 +1,32 @@
+category: ppc
+points: 100
+title:
+  ru: Картограф
+  en: Cartographer
+author: sylfn
+description:
+  ru: |
+    <p>Я хочу сыграть с вами одну игру.
+
+    <p>Правила игры таковы: я даю Вам случайные картинки из реальной жизни. Вам нужно найти место, где стояла камера.
+
+    <p>Я принимаю только ответы в радиусе 100 метров от ожидаемого, но не ограничиваю Вас в попытках.
+
+    <p>Чтобы компенсировать несправедливость, я предоставляю Вам возможность использовать карту для выбора ответа.
+  en: |
+    <p>Hello, %username%. I want to play a game.
+
+    <p>Game rules are following. You are given a photo of a random place, and your task is to guess where was it taken from.
+
+    <p>Your answer is accepted only if it is within 100 meters of the expected one. However, attempts count is unrestricted.
+
+    <p>I also provide you with interactive map for answer input for a global balance.
+generator: ../_scripts/kyzylborda-lib-generator
+daemon:
+  exec: kyzylborda-docker-compose-daemon
+  cwd: app
+  socket: ./app.sock
+  socket_type: http
+secrets:
+  seed: BBFdA07iBmVYJq+9i5obBL19wf1TEEeHSaOlBL2R1l7x6qVZOXl7RlUnBxOtiAqR
+  flag: ugra_i_am_the_mr_worldwide_[a-z0-9]{12}

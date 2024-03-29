@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Cartographer</title>
+
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
+        <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/openlocationcode/1.0.3/openlocationcode.min.js"></script>
+
+        <style type="text/css">
+            body {
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+
+            .logo {
+                position: absolute;
+                top: 1em;
+                left: 1em;
+                gap: 0em;
+
+                display: flex;
+                flex-direction: row;
+
+                font-family: monospace;
+                font-weight: 900;
+                font-size: 2em;
+
+                user-select: none;
+            }
+
+            .logo-upper {
+                z-index: 10;
+            }
+
+            .logo-icon {
+                height: 1em;
+            }
+
+            .logo-lower-text {
+                -webkit-text-fill-color: white;
+                -webkit-text-stroke: .25em red;
+            }
+
+            .logo-text {
+                color: white;
+            }
+
+            .meta {
+                position: absolute;
+                top: 1em;
+                right: 1em;
+
+                background-color: white;
+                border-radius: 1em;
+                gap: 1.5em;
+                padding-top: .5em;
+                padding-bottom: .5em;
+                padding-left: 1em;
+                padding-right: 1em;
+
+                display: flex;
+                flex-direction: row;
+            }
+
+            .meta-entry {
+                display: flex;
+                flex-direction: column;
+
+                text-align: center;
+                font-style: italic;
+            }
+
+            .meta-what {
+                font-family: sans-serif;
+            }
+
+            .meta-val {
+                font-family: monospace;
+                font-size: 1.5em;
+            }
+
+            .container {
+                display: flex;
+                flex-direction: column;
+                gap: .5em;
+
+                position: absolute;
+                bottom: 1em;
+                right: 1em;
+            }
+
+            .captcha {
+                display: flex;
+                flex-direction: row;
+                justify-content: center;
+                align-content: center;
+            }
+
+            .map {
+                width: 36em;
+                height: 30em;
+                border-radius: 1.5em;
+            }
+
+            .image {
+                z-index: -1000;
+
+                position: fixed;
+                left: 0;
+                right: 0;
+                top: 50%;
+                transform: translateY(-50%);
+
+                width: 100vw;
+                min-height: 100vh;
+                height: auto;
+            }
+        </style>
+    </head>
+    <body>
+        <img class="image">
+
+        <div class="logo">
+            <div class="logo-lower-text">CARTO</div>
+            <img class="logo-icon"
+                src="/static/location-icon.svg"
+                alt="Generic location icon, lower">
+            <div class="logo-lower-text">GRAPHER</div>
+        </div>
+        <div class="logo logo-upper">
+            <div class="logo-text">CARTО</div>
+            <img class="logo-icon"
+                src="/static/location-icon.svg"
+                alt="Generic location icon, upper">
+            <div class="logo-text">GRAPHER</div>
+        </div>
+
+        <div class="meta">
+            <div class="meta-entry">
+                <div class="meta-what text-map">карта</div>
+                <div class="meta-val text-world">Весь мир</div>
+            </div>
+            <div class="meta-entry">
+                <div class="meta-what text-round">раунд</div>
+                <div class="meta-val remaining">?? / ??</div>
+            </div>
+            <div class="meta-entry">
+                <div class="meta-what text-diff">сложность</div>
+                <div class="meta-val text-difficulty-level">Несложная</div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="map" id="map"></div>
+            <form class="captcha">
+                <input class="value" placeholder="9JHF239Q+G6" />
+                <button class="submit">Пальцем в небо!</button>
+            </form>
+        </div>
+
+
+        <script type="text/javascript">
+            const languages = window.navigator.languages || ["ru"];
+            const languages_short = languages.map(lang => lang.slice(0, 2));
+            const idx_ru = languages_short.indexOf("ru");
+            const idx_en = languages_short.indexOf("en");
+            const is_eng = idx_ru == -1 || idx_en != -1 && idx_en < idx_ru;
+
+            if (is_eng) {
+                document.querySelector(".submit").textContent = "Scientific guess!";
+                document.querySelector(".text-map").textContent = "map";
+                document.querySelector(".text-world").textContent = "World";
+                document.querySelector(".text-round").textContent = "round";
+                document.querySelector(".text-diff").textContent = "difficulty";
+                document.querySelector(".text-difficulty-level").textContent = "Simple";
+            }
+
+            const remaining = document.querySelector(".remaining");
+            const captcha = document.querySelector(".captcha");
+            const image = document.querySelector(".image");
+            const input = document.querySelector(".value");
+
+            function update({ counter, flag, picture, retry_captcha }) {
+                remaining.textContent = `${2024 - counter} / 2024`;
+                image.src = picture;
+
+                if (retry_captcha) {
+                    alert(
+                        is_eng
+                        ? "Not there. Try again with different one."
+                        : "Не тут. Может с другой картинкой повезёт?"
+                    );
+                };
+
+                if (counter === 0) {
+                    alert(flag);
+                }
+            }
+
+            fetch("state").then(req => req.json()).then(update);
+
+            document.querySelector(".submit").addEventListener("click", async e => {
+                e.preventDefault();
+                response = input.value;
+                input.value = "";
+                const req = await fetch("click", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ captcha_response: response })
+                });
+                const resp = await req.json();
+                update(resp);
+            });
+
+            var map = L.map('map').setView([61.0188125, 69.0880625], 17);
+
+            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            }).addTo(map);
+
+            var marker = L.marker([61.0188125, 69.0880625]).addTo(map);
+            marker.options.draggable = true;
+            marker.options.autoPan = true;
+            marker.dragging.enable();
+            marker.on('drag', e => input.value = OpenLocationCode.encode(e.latlng.lat, e.latlng.lng));
+            marker.on('move', e => input.value = OpenLocationCode.encode(e.latlng.lat, e.latlng.lng));
+            map.on('click', e => marker.setLatLng(e.latlng));
+        </script>
+    </body>
+</html>

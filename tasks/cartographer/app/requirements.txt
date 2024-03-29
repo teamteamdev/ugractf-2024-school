@@ -1,0 +1,7 @@
+flask
+openlocationcode
+piexif
+scipy
+pillow
+haversine
+requests
