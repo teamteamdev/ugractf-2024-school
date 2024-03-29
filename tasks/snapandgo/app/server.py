@@ -65,7 +65,7 @@ def make_app(state_dir):
    
         dirname = f"{state_dir}/{token}"
         os.makedirs(dirname, exist_ok=True)
-        open(f"{dirname}/clicks.txt", "a").write(request.query.get("value", ""))
+        open(f"{dirname}/clicks.txt", "a").write(request.query.get("value", "") + "\n")
         
         return aiohttp.web.json_response(True)
 
