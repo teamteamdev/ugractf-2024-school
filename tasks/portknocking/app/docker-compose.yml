@@ -3,7 +3,7 @@ services:
     build: .
     networks:
       - task-net
-    cmd: ["python3", "server.py"]
+    command: ["python3", "server.py"]
   client:
     build: .
     depends_on:
@@ -16,7 +16,7 @@ services:
       - ${TMPDIR}:/data # tmpdir is defined in script
     cap_add:
       - NET_ADMIN
-    cmd: ["./run.sh"]
+    command: ["./run.sh"]
 networks:
   task-net:
     driver: bridge
