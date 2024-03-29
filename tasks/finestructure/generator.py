@@ -24,11 +24,11 @@ def generate():
     draw = PIL.ImageDraw.ImageDraw(img)
     font = PIL.ImageFont.load(os.path.join("private", "ter-u14b_iso-8859-1.pil"))
     draw.text((16, 5), flag, font=font, fill=(255, 211, 100))
-    img = img.resize((1024, 64))
+    img = img.resize((1448, 90))
     img.save(bio, format="BMP")
 
-    key = random.randbytes(262144)
-    data = (bio.getvalue() + b"\0" * 262144)[:262144]
+    key = random.randbytes(524288)
+    data = (bio.getvalue() + b"\0" * 524288)[:524288]
     data_enc = bytes(a ^ b for a, b in zip(key, data))
 
 
