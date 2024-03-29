@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Poster</title>
+
+		<link rel="stylesheet" type="text/css" href="/static/fonts.css">
+		<style type="text/css">
+			main {
+				margin: 32px auto;
+				max-width: 650px;
+				font-family: Roboto, sans-serif;
+				font-size: 16px;
+			}
+
+			.title {
+				border: none;
+				font-family: inherit;
+				font-size: 2em;
+				width: 100%;
+				outline: none;
+			}
+
+			.ce-paid-content-delimiter {
+				line-height: 1.6em;
+				width: 100%;
+				text-align: center;
+			}
+
+			.ce-paid-content-delimiter::before {
+				content: "🔒 Продолжение статьи доступно только по платной подписке. Свяжитесь с автором для получения доступа.";
+			}
+
+			.share {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				width: 64px;
+				height: 64px;
+				border-radius: 50%;
+				box-shadow: 0 2px 4px #e0e0e0;
+				cursor: pointer;
+				color: #ffffff;
+				position: fixed;
+				right: 16px;
+			}
+			.share svg {
+				width: 100%;
+				height: 100%;
+			}
+
+			.share-all {
+				background-color: #2ea0ff;
+				bottom: 16px;
+			}
+			.share-subscribers {
+				background-color: #f52a2a;
+				bottom: 96px;
+			}
+		</style>
+	</head>
+	<body>
+		<main>
+			<input class="title" readonly>
+			<div id="editorjs"></div>
+		</main>
+
+		<div style="display: none;" class="share share-all" title="Public link"></div>
+		<div style="display: none;" class="share share-subscribers" title="Share with paid subscribers"></div>
+
+		<script src="/static/editorjs.min.js"></script>
+		<script type="text/javascript">
+			const icons = window["@codexteam/icons"];
+
+			class PatchedRawTool extends RawTool {
+				render() {
+					const wrapper = super.render();
+					if (this.readOnly) {
+						const div = document.createElement("div");
+						div.innerHTML = this.data.html;
+						wrapper.appendChild(div);
+						this.textarea.hidden = true;
+					} else {
+						this.textarea.addEventListener("keydown", e => {
+							// Make backspace work correctly
+							if (e.key === "Backspace") {
+								e.stopPropagation();
+							}
+						})
+					}
+					return wrapper;
+				}
+			}
+
+			class PaidContentDelimiter {
+				static get isReadOnlySupported() {
+					return true;
+				}
+				static get contentless() {
+					return true;
+				}
+				constructor({data, config, api}) {
+					this.api = api;
+					this._CSS = {
+						block: this.api.styles.block,
+						wrapper: "ce-paid-content-delimiter"
+					};
+					this._data = {};
+					this._element = this.drawView();
+					this.data = data;
+				}
+				drawView() {
+					const div = document.createElement("div");
+					div.classList.add(this._CSS.wrapper, this._CSS.block);
+					return div;
+				}
+				render() {
+					return this._element;
+				}
+				save(toolsContent) {
+					return {};
+				}
+				static get toolbox() {
+					return {
+						icon: icons.IconHeart,
+						title: "Paid content cut",
+					};
+				}
+			}
+
+			let password = null;
+			for (const cookie of document.cookie.split(";")) {
+				const [key, value] = cookie.trim().split("=");
+				if (key === "password") {
+					password = value;
+				}
+			}
+
+			const shareAllNode = document.querySelector(".share-all");
+			const shareSubscribersNode = document.querySelector(".share-subscribers");
+
+			const titleNode = document.querySelector(".title");
+			titleNode.addEventListener("input", onChange);
+
+			let editor;
+
+			function init({ title, content, view_full_password }) {
+				titleNode.readOnly = !view_full_password;
+				titleNode.placeholder = "Заголовок";
+				titleNode.value = title;
+
+				editor = new EditorJS({
+					tools: {
+						header: Header,
+						raw: PatchedRawTool,
+						checklist: Checklist,
+						list: List,
+						embed: Embed,
+						code: CodeTool,
+						inlineCode: InlineCode,
+						table: Table,
+						marker: Marker,
+						underline: Underline,
+						footnotes: FootnotesTune,
+						paid: PaidContentDelimiter,
+					},
+					placeholder: "Пишите письма...",
+					onReady() {
+						editor.render(content);
+					},
+					onChange,
+					readOnly: !view_full_password,
+				});
+
+				if (view_full_password) {
+					shareAllNode.innerHTML = icons.IconGlobe;
+					shareAllNode.style.display = "";
+					shareAllNode.addEventListener("click", () => {
+						prompt("Here is your link for the public:", location.href);
+					});
+
+					shareSubscribersNode.innerHTML = icons.IconStar;
+					shareSubscribersNode.style.display = "";
+					shareSubscribersNode.addEventListener("click", () => {
+						prompt("Here is your link for paid subscribers:", `${location.href}?password=${view_full_password}`);
+					});
+				}
+			}
+
+			let isSaving = false;
+			let hasUnsavedUpdates = false;
+
+			async function onChange() {
+				if (editor.readOnly.isEnabled) {
+					return;
+				}
+
+				hasUnsavedUpdates = true;
+				if (isSaving) {
+					return;
+				}
+				isSaving = true;
+				while (hasUnsavedUpdates) {
+					hasUnsavedUpdates = false;
+					await save();
+				}
+				isSaving = false;
+			}
+
+			async function save() {
+				const request = {
+					title: titleNode.value,
+					content: await editor.save(),
+					password,
+				};
+
+				await fetch("update", {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify(request),
+				});
+
+				// Do not spam the server
+				await new Promise(resolve => setTimeout(resolve, 1000));
+			}
+
+			(async () => {
+				const request = {password};
+
+				const response = await fetch("retrieve", {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify(request),
+				});
+				init(await response.json());
+			})();
+
+			window.addEventListener("keydown", e => {
+				// Disable Ctrl-S (hopefully)
+				if (e.ctrlKey && e.keyCode === 83) {
+					e.preventDefault();
+					onChange();
+				}
+			});
+		</script>
+	</body>
+</html>

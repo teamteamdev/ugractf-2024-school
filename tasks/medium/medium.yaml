@@ -1,0 +1,20 @@
+category: web
+points: 200
+title: Medium
+author: purplesyringa
+description: |
+  Незадолго до CTFа обнаружили, что во флаге этого задания мы допустили ошибку и скопировали его из
+  старого таска. Но времени переделывать уже не было, так что пришлось оставить как есть. Решили,
+  что чтобы было честно, лучше еще и разбор выложить. Заодно решили дать вам возможность выложить
+  смешной анекдот.
+generator: ../_scripts/kyzylborda-lib-generator
+daemon:
+  exec: kyzylborda-docker-compose-daemon
+  cwd: .
+  socket: ./app.sock
+  socket_type: http
+secrets:
+  seed: eFfPx2s528/sAAHyoLOkML5Ov9c/YezT
+  writeup_id: "[0-9a-zA-Z_]{16}"
+  admin_password: "[0-9a-zA-Z_]{16}"
+  flag: ugra_secure_vault_unlocked_[a-z0-9]{12}
