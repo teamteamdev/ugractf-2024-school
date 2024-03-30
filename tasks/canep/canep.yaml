@@ -1,0 +1,17 @@
+category: ppc
+points: 200
+title:
+  Canep
+author: enhydra
+description: |
+  <p>B canep kmo gourpaem —
+  <p>Harpagy mom o6pemem u mack cgacm.
+generator: ../_scripts/kyzylborda-lib-generator
+daemon:
+  exec: kyzylborda-docker-compose-daemon
+  cwd: app
+  socket: ./app.sock
+  socket_type: http
+secrets:
+  seed: faejaeRor2ohX7ohcheerohSaoSeSoh5nooCh0aese6a
+  flag: ugra_mparuk_gocmaem_kycok_nanupyca_[acegkmnopruxy]{12}

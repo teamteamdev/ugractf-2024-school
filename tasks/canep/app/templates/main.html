@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Canep</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+        <style>
+            body {
+                font-family: Inter, sans-serif;
+                font-size: 18px;
+                position: relative;
+                background: #F2EEE4;
+            }
+            header {
+                position: fixed;
+                top: 1em;
+                left: 1em;
+                max-width: 20em;
+                pointer-events: none;
+            }
+            footer {
+                position: fixed;
+                left: 0;
+                right: 0;
+                bottom: 1em;
+                text-align: center;
+            }
+            h1 { 
+                font: inherit;
+                font-size: 150%;
+                font-weight: bold;
+                margin: 0;
+            }
+            header p {
+                margin: 0.25em 0;
+            }
+            body {
+                width: 300vh;
+                height: 300vw;
+                overflow: scroll;
+            }
+            footer a {
+                text-decoration: none;
+                display: inline-block;
+                font-size: 75%;
+                margin: 0 0.1em;
+                width: 1.5em;
+                padding: 0.25em 0;
+                height: 1em;
+                text-align: center;
+                color: black;
+            }
+            footer a.active {
+                color: white;
+                background: #820;
+            }
+            #game {
+                position: fixed;
+                width: 20em;
+                height: 20em;
+                top: 50%; left: 50%; transform: translate(-50%, -50%);
+            }
+            #game.game-over {
+                pointer-events: none;
+            }
+            .wrapper {
+                perspective: 100px;
+                perspective-origin: 50% 50%;
+                position: relative;
+                height: 100%;
+            }
+            #inner-wrapper {
+                height: 100%;
+                perspective: 100px;
+            }
+            .layer {
+                width: 100%;
+                height: 100%;
+                position: absolute;
+                display: flex;
+                flex-direction: column;
+                transition: opacity 0.2s;
+            }
+            .layer.inactive {
+                opacity: 0.1;
+                pointer-events: none;
+            }
+            .row {
+                display: flex;
+                flex-direction: row;
+                flex-grow: 1;
+                flex-basis: 0;
+                align-items: stretch;
+            }
+            .cell {
+                flex-grow: 1;
+                flex-basis: 0;
+                opacity: 0.7;
+                background: rgba(220, 210, 206, 0.8);
+                text-decoration: none;
+                line-height: 100%;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                border: 1px solid rgba(100, 80, 70, 0.4);
+                font-size: 13px;
+                font-weight: 900;
+            }
+            .cell.open {
+                background: rgba(250, 240, 236, 0.8);
+            }
+            .cell.hoverable:hover {
+                background: white;
+                opacity: 1;
+            }
+            .cell.hoverable:active {
+                background: rgb(150, 130, 120) !important;
+                opacity: 1;
+            }
+            .cell.flag {
+                background-color: rgba(255, 230, 140, 0.8);
+                background-image: url('/static/fl.png');
+                background-size: 70%;
+                background-repeat: no-repeat;
+                background-position: center;
+            }
+            .cell.bomb {
+                background-color: red;
+                background-image: url('/static/bo.png');
+                background-size: 70%;
+                background-repeat: no-repeat;
+                background-position: center;
+            }
+            .cell-inner {
+                text-align: center;
+            }
+            .cell.open {   color: #808000; }
+            .cell.open-1 { color: #0000FF; }
+            .cell.open-2 { color: #008000; }
+            .cell.open-3 { color: #FF0000; }
+            .cell.open-4 { color: #000080; }
+            .cell.open-5 { color: #800000; }
+            .cell.open-6 { color: #008080; }
+            .cell.open-7 { color: #000000; }
+            .cell.open-8 { color: #808080; }
+            .cell.open-9 { color: #a44d88; }
+            .cell.open-10 { color: #647ea0; }
+            .cell.open-11 { color: #68080f; }
+            .cell.open-12 { color: #8d7f92; }
+            .cell.open-13 { color: #87384a; }
+            .cell.open-14 { color: #2ca71f; }
+            .cell.open-15 { color: #81584f; }
+            .cell.open-16 { color: #11633d; }
+            .cell.open-17 { color: #297ba1; }
+            .cell.open-18 { color: #359ab2; }
+            .cell.open-19 { color: #873f62; }
+            .cell.open-20 { color: #274405; }
+            .cell.open-21 { color: #34a027; }
+            .cell.open-22 { color: #895e2e; }
+            .cell.open-23 { color: #aa1982; }
+            .cell.open-24 { color: #8ca896; }
+            .cell.open-25 { color: #40724d; }
+            .cell.open-26 { color: #817d07; }
+            #error {
+                position: fixed;
+                left: 30%;
+                right: 30%;
+                text-align: center;
+                background: #A31;
+                color: white;
+                padding: 1em 0;
+                top: -10%;
+                transition: top 0.5s;
+            }
+            #error.error {
+                top: 4%;
+            }
+            #error.win {
+                top: 4%;
+                background: #3A1;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="game">
+            <div class="wrapper" style="">
+                <div id="inner-wrapper" style="">
+                </div>
+            </div>
+        </div>
+        <header>
+            <h1>Canep</h1>
+            <p>(urpa kak om cmaporo gega — urpok cmpagaem agcku, kak nec)</p>
+        </header>
+        <footer>
+            {% for i in range(0, levels + 1) %}<a href="{{ i }}"{% if level == i %} class="active"{% endif %}>{{ i }}</a>{% endfor %}
+        </footer>
+        <div id="error">
+        </div>
+        <script type="text/javascript" src="/static/ckpunm.js"></script>
+    </body>
+</html>
