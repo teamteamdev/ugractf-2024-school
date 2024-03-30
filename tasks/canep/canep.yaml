@@ -4,8 +4,7 @@ title:
   Canep
 author: enhydra
 description: |
-  <p>B canep kmo gourpaem —
-  <p>Harpagy mom o6pemem u mack cgacm.
+  <p>B canep kmo gourpaem —<br>Harpagy mom o6pemem u mack cgacm.
 generator: ../_scripts/kyzylborda-lib-generator
 daemon:
   exec: kyzylborda-docker-compose-daemon
