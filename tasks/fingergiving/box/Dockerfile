@@ -11,5 +11,5 @@ RUN chmod 777 /usr/local/bin/shell.sh
 RUN touch /flag.txt
 RUN chmod 600 /flag.txt
 
-USER user
+USER user:user
 CMD ["/usr/local/bin/shell.sh"]
